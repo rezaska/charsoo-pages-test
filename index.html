@@ -61,14 +61,15 @@
 </div>
 
 <script>
-  const ms = n => n < 1000 ? Math.round(n) + " میلی‌ثانیه"
-                           : (n / 1000).toFixed(1) + " ثانیه";
+  const ms = n => !n || n < 1 ? "کمتر از ۱ میلی‌ثانیه"
+               : n < 1000 ? Math.round(n) + " میلی‌ثانیه"
+                          : (n / 1000).toFixed(1) + " ثانیه";
   addEventListener("load", () => {
     const nav = performance.getEntriesByType("navigation")[0];
-    document.getElementById("t").textContent =
-      nav ? ms(nav.duration) : ms(performance.now());
+    const t = nav ? (nav.duration || nav.responseEnd - nav.startTime) : performance.now();
+    document.getElementById("t").textContent = ms(t);
     const img = performance.getEntriesByName(document.getElementById("pic").src)[0];
-    document.getElementById("i").textContent = img ? ms(img.duration) : "فوری";
+    document.getElementById("i").textContent = img && img.duration ? ms(img.duration) : "فوری";
     document.getElementById("d").textContent =
       new Date().toLocaleString("fa-IR", { dateStyle: "short", timeStyle: "short" });
   });
